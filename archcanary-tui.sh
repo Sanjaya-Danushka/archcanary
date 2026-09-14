@@ -94,7 +94,11 @@ _run() {
     echo
     LAST_RC=0
     if [[ "$use_sudo" == true ]]; then
-        sudo archcanary "$@" || LAST_RC=$?
+        # sudo uses root's secure_path, which never includes ~/.local/bin —
+        # resolve the real binary (user or system install) and sudo that.
+        local _cmd
+        _cmd="$(command -v archcanary || echo /usr/local/bin/archcanary)"
+        sudo "$_cmd" "$@" || LAST_RC=$?
     else
         archcanary "$@" || LAST_RC=$?
     fi
@@ -228,7 +232,7 @@ _edit_via_get_set() {
     read -rp "Save changes? [y/N]: " ans || exit 0
     [[ "$ans" =~ ^[Yy]$ ]] || return 0
     echo
-    if sudo archcanary "$set_flag" < "$tmpfile"; then
+    if sudo "$(command -v archcanary || echo /usr/local/bin/archcanary)" "$set_flag" < "$tmpfile"; then
         echo "Saved."
     else
         echo "Save failed."
