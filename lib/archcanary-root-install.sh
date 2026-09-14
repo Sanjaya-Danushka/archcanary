@@ -289,6 +289,12 @@ uninstall-components)
           /etc/audit/rules.d/archcanary.conf
     augenrules --load >/dev/null 2>&1 || true
     echo "  removed: /etc/audit/rules.d/30-archcanary.rules (auditd rules)"
+    # Legacy cleanup: the Lynis plugin was installed to /usr/share/lynis/plugins/
+    # in June 2026 releases under both names (renamed mid-window). The plugin
+    # concept was removed, but users who installed during that window still carry
+    # these files — remove them on uninstall.
+    rm -f /usr/share/lynis/plugins/plugin_archcanary_phase1 \
+          /usr/share/lynis/plugins/plugin_archcanary_phase1.sh
     ;;
 
 *)

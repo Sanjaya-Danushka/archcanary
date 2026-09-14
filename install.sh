@@ -302,10 +302,8 @@ if $SYSTEM; then
     # The source unit uses /usr/bin/archcanary (AUR/PKGBUILD route). For a
     # system install the binary lands in $SYSTEM_BIN (/usr/local/bin), so
     # patch the installed copy.
-    if $SYSTEM; then
-        sed -i "s|/usr/bin/archcanary|$SYSTEM_BIN/archcanary|g" \
-            "$USER_UNITS/archcanary-user.service"
-    fi
+    sed -i "s|/usr/bin/archcanary|$SYSTEM_BIN/archcanary|g" \
+        "$USER_UNITS/archcanary-user.service"
     systemctl --user daemon-reload 2>/dev/null || true
     echo "  installed: $USER_UNITS/archcanary-user.{service,timer} + notify.{path,service} (not enabled — see below)"
 
